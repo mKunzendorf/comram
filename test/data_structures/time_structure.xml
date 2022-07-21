@@ -1,0 +1,5 @@
+<config>
+    <tag_1 LENGTH="20" TYPE="float" INIT_VALUE="0.0" > </tag_1>
+    <tag_2 LENGTH="20" TYPE="float" INIT_VALUE="0.0" > </tag_2>
+    <tag_3 LENGTH="20" TYPE="float"  > </tag_3>
+</config>

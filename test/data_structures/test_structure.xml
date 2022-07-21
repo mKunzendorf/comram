@@ -1,0 +1,4 @@
+<config>
+    <tag_1 LENGTH="10" TYPE="int" > </tag_1>
+    <tag_2 LENGTH="10" TYPE="int" > </tag_2>
+</config>
