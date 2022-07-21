@@ -3,7 +3,7 @@ import threading
 import select
 import time
 
-import ramshare
+from comram import ramshare
 
 
 def producer_get_connection(self, producer_socket):
@@ -21,7 +21,8 @@ def producer_get_connection(self, producer_socket):
                 consumer_checksum = msg[30:62].decode('utf-8').strip(" ")
                 checksum = self.share_memory.data_dict_checksum
                 if consumer_checksum == checksum:
-                    print("checksum match")
+                    if self.debug:
+                        print("checksum match")
 
                     if consumer_name in connection_dict:
                         old_client_address = connection_dict[consumer_name]
@@ -76,14 +77,13 @@ def producer_message_transmitter(self):
     t_transmitter.start()
 
     while self.signal:
-        msg = self.share_memory.read_all_bytes()
-        print(msg)
         if len(self.producer_client_list):
             msg = self.share_memory.read_all_bytes()
 
             for i in range(len(self.producer_client_list)):
                 producer_socket.sendto(msg, self.producer_client_list[i])
-                print("sending message to: ", self.producer_client_list[i])
+                if self.debug:
+                    print("sending message to: ", self.producer_client_list[i])
         time.sleep(self.send_interval)
 
 
@@ -98,31 +98,28 @@ def consume_message_receiver(self):
 
     checksum = self.share_memory.data_dict_checksum.encode('utf-8')
     message = consumer_name + connect + checksum
-    consume_socket.sendto(message, (self.ip, self.port))
-
-    ready = select.select([consume_socket], [], [], timeout_in_seconds)
-    if ready[0]:
-        msg, _ = consume_socket.recvfrom(65535)
-        connection_status = msg[0:20].decode('utf-8').strip(" ")
-        update_time = float(msg[20:30].decode('utf-8').strip(" "))
-        timeout_in_seconds = update_time * 2
-        print("producer uodate time: ", update_time)
-        if connection_status == "connection_success":
-            if self.debug:
-                print("successfully connected to producer")
-
-        else:
-            raise ValueError(connection_status)
-
-    else:
-        raise ConnectionError("Connection to producer timeout")
+    while not self.connection and self.signal:
+        consume_socket.sendto(message, (self.ip, self.port))
+        ready = select.select([consume_socket], [], [], timeout_in_seconds)
+        if ready[0]:
+            msg, _ = consume_socket.recvfrom(65535)
+            connection_status = msg[0:20].decode('utf-8').strip(" ")
+            update_time = float(msg[20:30].decode('utf-8').strip(" "))
+            timeout_in_seconds = update_time * 100
+            self.connection = True
+            if connection_status == "connection_success":
+                if self.debug:
+                    print("successfully connected to producer")
+            else:
+                raise ValueError(connection_status)
 
     while self.signal:
         ready = select.select([consume_socket], [], [], timeout_in_seconds)
         if ready[0]:
             msg, _ = consume_socket.recvfrom(65535)
+            self.share_memory.consume_write_all(msg)
             if self.debug:
-                self.share_memory.consume_write_all(msg)
+
                 print(msg)
         else:
             raise ConnectionError("Connection to producer timeout")
@@ -136,7 +133,7 @@ def consume_message_receiver(self):
 
 
 class Produce(threading.Thread):
-    def __init__(self, share_name, ip=None, port=None, send_interval=0.01, data_type=None, debug=True):
+    def __init__(self, share_name, ip=None, port=None, send_interval=0.01, data_type=None, debug=False):
         threading.Thread.__init__(self)
         self.signal = True
         self.ip = ip
@@ -167,10 +164,13 @@ class Produce(threading.Thread):
     def stop_produce(self):
         self.signal = False
 
+    def unlink(self):
+        self.share_memory.unlink()
+
 
 class Consume(threading.Thread):
 
-    def __init__(self, share_name, conname, ip=None, port=None, data_type=None, debug=True):
+    def __init__(self, share_name, conname, ip=None, port=None, data_type=None, debug=False):
         threading.Thread.__init__(self)
         self.signal = True
         self.ip = ip
@@ -180,6 +180,7 @@ class Consume(threading.Thread):
         self.share_memory = ramshare.RamShare(self.share_name, self.data_type)
         self.name = conname
         self.debug = debug
+        self.connection = False
 
     def start_consume(self):
         self.signal = True
@@ -200,3 +201,6 @@ class Consume(threading.Thread):
 
     def stop_consume(self):
         self.signal = False
+
+    def unlink(self):
+        self.share_memory.unlink()

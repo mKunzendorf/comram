@@ -68,6 +68,11 @@ def read_data_structure(self):
         else:
             data_structure_dict["tag_dict"][child.tag]['INIT_VALUE'] = None
 
+        if 'TYPE' in child.attrib:
+            data_structure_dict["tag_dict"][child.tag]['TYPE'] = child.attrib['TYPE']
+        else:
+            data_structure_dict["tag_dict"][child.tag]['TYPE'] = None
+
         combined_pos = combined_pos + (int(child.attrib["LENGTH"]))
     data_structure_dict["tag_len"] = combined_pos
     return data_structure_dict
@@ -106,7 +111,6 @@ class RamShare:
                 shared_checksum = json.loads(shared_checksum_bytes.decode('utf-8'))
                 if self.data_dict_checksum != shared_checksum:
                     raise ValueError("Data Structure Mismatch")
-                print("was here 2")
                 pass
 
         else:
@@ -127,6 +131,17 @@ class RamShare:
         tag_end_pos = (self.data_dict["tag_dict"][tag_name]["END_POS"]) + self.dict_end_pos
         tag_output_bytes = bytes(self.shm.buf[tag_start_pos:tag_end_pos])
         tag_output = tag_output_bytes.decode('utf-8')
+
+        if self.data_dict["tag_dict"][tag_name]["TYPE"]:
+            if self.data_dict["tag_dict"][tag_name]["TYPE"] == "float":
+                tag_output = float(tag_output)
+
+            elif self.data_dict["tag_dict"][tag_name]["TYPE"] == "int":
+                tag_output = int(tag_output)
+
+            elif self.data_dict["tag_dict"][tag_name]["TYPE"] == "string":
+                tag_output = str(tag_output)
+
         return tag_output
 
     def read_all_bytes(self):
@@ -137,7 +152,6 @@ class RamShare:
 
     def write_to_tag(self, tag_name, tag_data):
         write_to_data_structure(self, tag_name, tag_data)
-
 
     def consume_write_all(self, consume_data):
         tag_start_pos = self.dict_end_pos
