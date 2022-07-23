@@ -89,16 +89,15 @@ def producer_message_transmitter(self):
 
 def consume_message_receiver(self):
     timeout_in_seconds = 0.5
-    consume_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    consume_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65535)
-
     consumer_name = f"{self.name:<{20}}".encode('utf-8')
     con_dis = "connect"
     connect = f"{con_dis:<{10}}".encode('utf-8')
 
     checksum = self.share_memory.data_dict_checksum.encode('utf-8')
     message = consumer_name + connect + checksum
-    while not self.connection and self.signal:
+    while self.signal:
+        consume_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        consume_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65535)
         consume_socket.sendto(message, (self.ip, self.port))
         ready = select.select([consume_socket], [], [], timeout_in_seconds)
         if ready[0]:
@@ -112,24 +111,29 @@ def consume_message_receiver(self):
                     print("successfully connected to producer")
             else:
                 raise ValueError(connection_status)
-
-    while self.signal:
-        ready = select.select([consume_socket], [], [], timeout_in_seconds)
-        if ready[0]:
-            msg, _ = consume_socket.recvfrom(65535)
-            self.share_memory.consume_write_all(msg)
-            if self.debug:
-
-                print(msg)
         else:
-            raise ConnectionError("Connection to producer timeout")
+            consume_socket.close()
 
-    con_dis = "disconnect"
-    connect = f"{con_dis:<{10}}".encode('utf-8')
+        while self.signal and self.connection:
+            ready = select.select([consume_socket], [], [], timeout_in_seconds)
+            if ready[0]:
+                msg, _ = consume_socket.recvfrom(65535)
+                self.share_memory.consume_write_all(msg)
+                if self.debug:
+                    print(msg)
+            else:
+                if self.reconnect:
+                    self.connection = False
+                    consume_socket.close()
+                else:
+                    raise ConnectionError("Connection to producer timeout")
 
-    disconnect_msg = consumer_name + connect
-    consume_socket.sendto(disconnect_msg, (self.ip, self.port))
-    consume_socket.close()
+    if self.connection:
+        con_dis = "disconnect"
+        connect = f"{con_dis:<{10}}".encode('utf-8')
+        disconnect_msg = consumer_name + connect
+        consume_socket.sendto(disconnect_msg, (self.ip, self.port))
+        consume_socket.close()
 
 
 class Produce(threading.Thread):
@@ -170,7 +174,7 @@ class Produce(threading.Thread):
 
 class Consume(threading.Thread):
 
-    def __init__(self, share_name, conname, ip=None, port=None, data_type=None, debug=False):
+    def __init__(self, share_name, conname, ip=None, port=None, data_type=None, debug=False, reconnect=True):
         threading.Thread.__init__(self)
         self.signal = True
         self.ip = ip
@@ -181,6 +185,7 @@ class Consume(threading.Thread):
         self.name = conname
         self.debug = debug
         self.connection = False
+        self.reconnect = reconnect
 
     def start_consume(self):
         self.signal = True
