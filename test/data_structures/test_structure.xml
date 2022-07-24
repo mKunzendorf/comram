@@ -1,4 +1,5 @@
 <config>
+    <connection_status LENGTH="20" TYPE="string" INIT_VALUE="no connection"  DESCRIPTION="status of connection" > </connection_status>
     <tag_1 LENGTH="10" TYPE="int" > </tag_1>
     <tag_2 LENGTH="10" TYPE="int" > </tag_2>
 </config>
