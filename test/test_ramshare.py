@@ -48,6 +48,12 @@ class Test_ramshare(unittest.TestCase):
         self.assertEqual(test_2, 99)
         test.unlink()
 
+    def test_len_1_read_write(self):
+        test = ramshare.RamShare("test_share_name", "test_structure")
+        test.write_to_tag("tag_3", 3)
+        test_2 = int(test.read_tag("tag_3"))
+        self.assertEqual(test_2, 3)
+        test.unlink()
 
 if __name__ == '__main__':
     unittest.main()

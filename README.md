@@ -40,3 +40,6 @@ TYPE = tag type,
 INIT_VALUE = initial tag value
 
 DESCRIPTION = description of tag
+
+#### Known issues ####
+tag lenght under under 2 byte not possible

@@ -5,11 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/comram/procon.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/comram/procon.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/data_structures/test_structure.xml" beforeDir="false" afterPath="$PROJECT_DIR$/test/data_structures/test_structure.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/data_structures/test_structure_2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/test/data_structures/test_structure_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/data_structures/time_structure.xml" beforeDir="false" afterPath="$PROJECT_DIR$/test/data_structures/time_structure.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_procon.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_procon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_ramshare.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_ramshare.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +28,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/xxx/Documents/data_structures&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/xxx/Documents/jetson_comm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>

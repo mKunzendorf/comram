@@ -122,7 +122,7 @@ def consume_message_receiver(self):
                 if self.debug:
                     print(msg)
             else:
-                self.share_memory.write_to_tag("connection_status", "connection_timeout")
+                self.share_memory.write_to_tag("connection_status", 2)
                 if self.reconnect:
                     self.connection = False
                     consume_socket.close()
