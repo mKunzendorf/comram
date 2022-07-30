@@ -4,9 +4,6 @@
     <list default="true" id="f8ffff98-4140-4646-a46f-d5887a8b45f6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/setup.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/data_structures/test_structure.xml" beforeDir="false" afterPath="$PROJECT_DIR$/test/data_structures/test_structure.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_ramshare.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_ramshare.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
