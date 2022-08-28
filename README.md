@@ -85,7 +85,7 @@ consumer.start_consume()
 ### dmsg usage: ###
 
 ##### produce:
-````
+````python
 from comram import dmsg
 
 test_producer = dmsg.Produce("127.0.0.1", 9500, debug=True)
@@ -93,7 +93,7 @@ test_producer.send_message("test message")
 test_producer.close()
 ````
 #### consume:
-````
+````python
 from comram import dmsg
 
 test_consume = dmsg.Consume("test_consumer", "127.0.0.1", 9500)
@@ -102,4 +102,4 @@ test_consume.close()
 ````
 
 #### Known issues ####
-tag lenght under under 2 byte not possible
+tag length under under 2 byte not possible
