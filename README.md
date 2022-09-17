@@ -102,6 +102,8 @@ test_consume.close()
 ````
 
 #### Known issues ####
+For python version python3.6 and python3.7 it is required to install a backport of shared memory.
 
+pip install shared-memory38
 
 tag length under under 2 byte not possible
