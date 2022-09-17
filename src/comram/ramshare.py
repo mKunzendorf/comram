@@ -1,8 +1,15 @@
 import xml.etree.ElementTree as ET
 import json
 import hashlib
-from multiprocessing import Process, resource_tracker
-from multiprocessing import shared_memory
+import sys
+
+if sys.version_info >= (3, 8):
+    from multiprocessing import resource_tracker
+    from multiprocessing import shared_memory
+else:
+    from shared_memory import resource_tracker
+    import shared_memory
+
 
 
 def remove_shm_from_resource_tracker():
